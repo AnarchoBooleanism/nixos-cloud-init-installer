@@ -3,6 +3,8 @@ A minimal NixOS flake with cloud-init designed for use as an installer ISO image
 
 This was designed to be used to provision new NixOS virtual machines on a Proxmox host, while allowing the dynamic configuration of disks and other hardware.
 
+There exist pre-built ISO images that you are able to download, for both x86_64 and aarch64, in this repository's releases. 
+
 ## Steps to build this image yourself:
 
 This assumes that you have Nix installed on your system, with flakes and nix-commands enabled.
