@@ -1,0 +1,56 @@
+name: "Build ISOs and create GitHub Release draft for new versions"
+
+on: # Only run on new version tag push
+  push:
+    tags:        
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - architecture: x86_64
+            os: ubuntu-24.04
+          - architecture: aarch64
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v5
+      - name: "Install Nix"
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:25.05
+      - name: Build ISO images
+        run: >
+          nix run nixpkgs#nixos-generators -- \
+            --format iso --system ${{ matrix.architecture }}-linux \
+            --flake .#${{ matrix.architecture }} --out-link result
+      - name: Rename generated ISO file to reflect version and architecture
+        run: >
+          mv $(find result/iso/ -name "nixos-*.iso" -print -quit) \
+            result/iso/nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iso-artifact-${{ matrix.architecture }}
+          path: result/iso/nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v5
+        with:
+          path: iso-artifacts
+          pattern: iso-artifact-*
+          merge-multiple: true
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: iso-artifacts/*.iso
