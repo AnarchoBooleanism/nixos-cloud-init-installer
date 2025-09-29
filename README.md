@@ -1,9 +1,11 @@
 # nixos-cloud-init-installer
 A minimal NixOS flake with cloud-init designed for use as an installer ISO image for provisioning virtual machines
 
-This was designed to be used to provision new NixOS virtual machines on a Proxmox host, while allowing the dynamic configuration of disks and other hardware.
+This was designed to be used to provision new NixOS virtual machines on a Proxmox host (via QEMU/KVM), while allowing the dynamic configuration of disks and other hardware. However, this should also support other hypervisors, including VirtualBox, Hyper-V, Xen, and VMWare.
 
 There exist pre-built ISO images that you are able to download, for both x86_64 and aarch64, in this repository's releases. 
+
+**NOTE:** SSH login via password is disabled, for security reasons! Instead, it is recommended to pass public SSH keys to NixOS via cloud-init when using this installer. However, for ease of installation, no password is required to use sudo.
 
 ## Steps to build this image yourself:
 

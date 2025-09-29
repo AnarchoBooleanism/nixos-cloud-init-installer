@@ -8,20 +8,30 @@
   # Boot faster
   boot.loader.timeout = lib.mkForce 2;
 
-  # Enabling things for easy connectivity and for integration with Proxmox
+  # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "prohibit-password";
   };
   services.qemuGuest.enable = true;
+  services.spice-vdagentd.enable = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.hypervGuest.enable = true;
 
-  # For convenience of installation
+  # For convenience of installation/debugging
   security.sudo.wheelNeedsPassword = false;
   environment.systemPackages = with pkgs; [
     nano
+    vim
+    man-db
     git
     curl
+    rsync
     htop
+    bash-completion
+    # More guest agents
+    xen-guest-agent
+    open-vm-tools
   ];
 }
