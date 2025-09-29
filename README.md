@@ -39,7 +39,7 @@ For NixOS, you just need to add this line to your configuration file: `boot.binf
 
 For non-NixOS systems, you just need to add this line to `nix.conf`: `extra-platforms = ARCHITECTURE_NAME`
 
-**Example for an x86_64 build system targetting aarch64:**
+**Example for an x86_64 build system targeting aarch64:**
 - `extra-platforms = aarch64-linux`
 
 Furthermore, on non-NixOS systems, you will need QEMU installed, particularly the `qemu-system` and `qemu-efi` for your target architecture, as well as `binfmt-support` and `qemu-user-static`. This will allow you to run the binaries of your target architecture that are necessary for building the image with that architecture.
