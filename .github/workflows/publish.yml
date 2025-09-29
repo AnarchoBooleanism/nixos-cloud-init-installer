@@ -34,12 +34,12 @@ jobs:
         run: |
           REAL_ISO_FILENAME=$(readlink -f $(find result/iso/ -name "nixos-*.iso" -print -quit))
           cp "$REAL_ISO_FILENAME" \
-            result/iso/nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+            nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: iso-artifact-${{ matrix.architecture }}
-          path: result/iso/nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+          path: nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
   create-release:
     needs: build
     runs-on: ubuntu-latest
