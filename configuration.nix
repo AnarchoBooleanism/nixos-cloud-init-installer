@@ -16,7 +16,7 @@
   };
   services.qemuGuest.enable = true;
   services.spice-vdagentd.enable = true;
-  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.enable = lib.mkIf (pkgs.stdenv.hostPlatform.isx86_64) true; # Quick solution as VirtualBox doesn't support ARM
   virtualisation.hypervGuest.enable = true;
 
   # For convenience of installation/debugging
@@ -31,7 +31,8 @@
     htop
     bash-completion
     # More guest agents
-    xen-guest-agent
     open-vm-tools
+  ] ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64) [ # Quick solution as Xen doesn't support ARM
+    xen-guest-agent
   ];
 }
