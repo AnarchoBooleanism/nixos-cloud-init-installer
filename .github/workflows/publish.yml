@@ -30,9 +30,9 @@ jobs:
           nix run nixpkgs#nixos-generators -- \
             --format iso --system ${{ matrix.architecture }}-linux \
             --flake .#${{ matrix.architecture }} --out-link result
-      - name: Rename generated ISO file to reflect version and architecture
+      - name: Copy and rename generated ISO file to reflect version and architecture
         run: |
-          REAL_ISO_FILENAME = $(readlink -f $(find result/iso/ -name "nixos-*.iso" -print -quit))
+          REAL_ISO_FILENAME=$(readlink -f $(find result/iso/ -name "nixos-*.iso" -print -quit))
           cp "$REAL_ISO_FILENAME" \
             result/iso/nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
       - name: Upload build artifact
