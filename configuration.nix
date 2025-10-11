@@ -8,6 +8,12 @@
   # Boot faster
   boot.loader.timeout = lib.mkForce 2;
 
+  # Enable serial console, for direct access
+  boot.kernelParams = [
+    "console=ttyS0,115200"
+    "console=tty1"
+  ];
+
   # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
   services.openssh = {
