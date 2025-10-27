@@ -22,6 +22,7 @@ jobs:
         uses: DeterminateSystems/flake-checker-action@v12
         with:
           fail-mode: true
+          check-outdated: false # This is the workflow for updating...
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v27
         with:
