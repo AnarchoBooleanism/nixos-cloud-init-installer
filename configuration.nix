@@ -36,6 +36,8 @@
     rsync
     htop
     bash-completion
+    dmidecode
+    ncdu
     # More guest agents
     open-vm-tools
   ] ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64) [ # Quick solution as Xen doesn't support ARM

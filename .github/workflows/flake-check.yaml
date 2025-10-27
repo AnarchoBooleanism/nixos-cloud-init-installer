@@ -1,0 +1,42 @@
+# Comes from https://github.com/Swarsel/.dotfiles/blob/main/.github/workflows/flake-checks.yaml
+
+name: Flake check
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+  flake-check:
+    name: Check flake
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v20
+      - name: Use Magic Nix Cache to cache builds between workflows
+        uses: DeterminateSystems/magic-nix-cache-action@v13
+      - name: Check Nix flake inputs
+        uses: DeterminateSystems/flake-checker-action@v12
+        with:
+          fail-mode: true
+      - name: Check for dead code in .nix files
+        run: git ls-files '*.nix' | nix run nixpkgs#deadnix
+        continue-on-error: true
+      - name: Check for lints in .nix files
+        run: nix run nixpkgs#statix -- check
+        continue-on-error: true
+      - name: Check formatting in .nix files
+        run: git ls-files '*.nix' | xargs nix run nixpkgs#nixfmt -- --check
+        continue-on-error: true

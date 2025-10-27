@@ -1,0 +1,29 @@
+# Comes from https://github.com/god464/flake/blob/master/.github/workflows/update.yml
+
+name: Update flake.lock
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 12 * * 2' # Every Sunday at 12:00 PM
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  update-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v20
+      - name: Check Nix flake inputs
+        uses: DeterminateSystems/flake-checker-action@v12
+        with:
+          fail-mode: true
+      - name: Update flake.lock
+        uses: DeterminateSystems/update-flake-lock@v27
+        with:
+          commit-msg: 'bump(lock): Update flake.lock'
+          pr-title: 'bump(lock): Update flake.lock'
