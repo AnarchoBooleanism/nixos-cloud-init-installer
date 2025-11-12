@@ -17,6 +17,7 @@
   # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
   services.cloud-init.network.enable = true;
+  networking.useDHCP = false; # cloud-init should handle this
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "prohibit-password";
@@ -29,6 +30,7 @@
   # For convenience of installation/debugging
   security.sudo.wheelNeedsPassword = false;
   environment.systemPackages = with pkgs; [
+    cloud-init
     nano
     vim
     man-db
