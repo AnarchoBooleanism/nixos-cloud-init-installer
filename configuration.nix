@@ -16,6 +16,7 @@
 
   # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
+  services.cloud-init.network.enable = true;
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "prohibit-password";
