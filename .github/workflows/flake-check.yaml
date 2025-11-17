@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v20
+        uses: DeterminateSystems/nix-installer-action@v21
       - name: Use Magic Nix Cache to cache builds between workflows
         uses: DeterminateSystems/magic-nix-cache-action@v13
       - name: Check Nix flake inputs
