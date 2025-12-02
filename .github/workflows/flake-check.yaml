@@ -46,4 +46,4 @@ jobs:
         run: git ls-files '*.nix' | xargs nix run nixpkgs#nixfmt -- --check
         continue-on-error: true
       - name: Check whether the flake builds
-        run: nix flake check --all-builds --keep-going .
+        run: nix flake check --all-systems --keep-going .
