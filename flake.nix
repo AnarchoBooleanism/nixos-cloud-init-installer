@@ -2,7 +2,7 @@
   description = "Basic NixOS setup with cloud-init, intended to be made into an ISO";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
   };
 
   outputs = { self, nixpkgs }: {
