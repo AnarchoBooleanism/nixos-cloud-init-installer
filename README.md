@@ -28,7 +28,7 @@ nix run nixpkgs#nixos-generators -- \
   --flake .#aarch64 --out-link result
 ```
 
-After building, your image should be in the `result/iso/` directory, being named something in the vein of `nixos-minimal-25.05-DATE-HASH-ARCHITECTURE-linux.iso`.
+After building, your image should be in the `result/iso/` directory, being named something in the vein of `nixos-minimal-25.11-DATE-HASH-ARCHITECTURE-linux.iso`.
 
 ### Notice for cross-compiling images
 If building an image for an architecture different to the native architecture of the build host, you will need to configure Nix accordingly.
