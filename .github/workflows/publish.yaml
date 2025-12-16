@@ -36,7 +36,7 @@ jobs:
           cp "$REAL_ISO_FILENAME" \
             nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
       - name: Upload build artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: iso-artifact-${{ matrix.architecture }}
           path: nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
