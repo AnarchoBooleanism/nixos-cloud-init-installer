@@ -30,10 +30,14 @@
   # For convenience of installation/debugging
   security.sudo.wheelNeedsPassword = false;
   environment.systemPackages = with pkgs; [
+    zsh
+    tmux
     cloud-init
     nano
     vim
+    neovim
     man-db
+    tldr
     git
     curl
     rsync
@@ -41,6 +45,8 @@
     bash-completion
     dmidecode
     ncdu
+    dig
+    net-tools
     # More guest agents
     open-vm-tools
   ] ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64) [ # Quick solution as Xen doesn't support ARM
