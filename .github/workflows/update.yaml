@@ -4,7 +4,7 @@ name: Update flake.lock
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * 2' # Every Sunday at 12:00 PM
+    - cron: '0 12 * * 0' # Every Sunday at 12:00 PM
 
 permissions:
   pull-requests: write
