@@ -20,6 +20,7 @@
   networking.usePredictableInterfaceNames = false; # cloud-init seems to expect names like "eth0", not "ens18"
   networking.useNetworkd = true; # Seems like cloud-init works better with systemd-networkd
   networking.useDHCP = false; # cloud-init should handle this
+  networking.dhcpcd.enable = false;
   services.openssh = {
     enable = true;
     settings.PermitRootLogin = "prohibit-password";
