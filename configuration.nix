@@ -17,6 +17,8 @@
   # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
   services.cloud-init.network.enable = true;
+  # cloud-init seems to expect names like "eth0", not "ens18"
+  networking.usePredictableInterfaceNames = false;
   networking.useNetworkd = true; # Seems like cloud-init works better with systemd-networkd
   networking.useDHCP = false; # cloud-init should handle this
   services.openssh = {
