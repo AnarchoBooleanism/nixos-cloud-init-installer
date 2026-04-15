@@ -17,6 +17,7 @@
   # Enabling things for easy connectivity and for integration with Proxmox, as well as other hypervisors
   services.cloud-init.enable = true;
   services.cloud-init.network.enable = true;
+  networking.useNetworkd = true; # Seems like cloud-init works better with systemd-networkd
   networking.useDHCP = false; # cloud-init should handle this
   services.openssh = {
     enable = true;
