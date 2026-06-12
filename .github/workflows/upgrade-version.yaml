@@ -1,0 +1,112 @@
+name: Upgrade NixOS version 
+on:
+  workflow_dispatch:
+  schedule:
+    # At 01:00 on day-of-month 7, every June & December (roughly a week or two after NixOS release)
+    - cron: '0 1 7 6,12 *'
+
+permissions:
+  pull-requests: write
+  contents: write
+
+env:
+  NIXOS_RELEASES_API_URL: "https://endoflife.date/api/v1/products/nixos/"
+  GITHUB_COMMITTER_EMAIL: "github-actions[bot]@users.noreply.github.com"
+  GITHUB_COMMITTER_NAME: "github-actions[bot]"
+
+jobs:
+  upgrade-nixos-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v22
+      - name: Check Nix flake inputs
+        uses: DeterminateSystems/flake-checker-action@v12
+        with:
+          check-owner: false # We're using non-NixOS inputs here
+          check-outdated: false # This is the workflow for updating...
+          fail-mode: true
+      - name: Get NixOS version listed in repository
+        run: |
+          version=$(nix flake metadata --json | jq -r '
+            .locks.nodes.root.inputs.nixpkgs as $root_pkgs
+            | .locks.nodes[$root_pkgs].original.ref
+            | sub("nixos-"; "")
+          ')
+
+          echo "The current NixOS version of the repository is $version"
+          echo "CURRENT_NIXOS_VERSION=${version}" >> $GITHUB_ENV
+      - name: Find the latest available NixOS version
+        run: |
+          # ASSUMPTION: .results.releases is in reverse chronological order!
+          # Find latest release that actually has been released
+          today_date=$(date +%F) # For consistency
+          latest_release=$(curl -s "${NIXOS_RELEASES_API_URL}" | jq -r \
+            --arg today "$today_date" \
+            '.result.releases[] | select(.releaseDate <= $today) | .name' \
+            | head -n 1)
+          
+          if [[ -z "${latest_release}" ]] ; then
+              echo "Error: No NixOS release is available to use for today ($today_date)! Is your time set correctly?" >&2
+              exit 1
+          fi
+
+          echo "Found latest NixOS release: ${latest_release}"
+          echo "LATEST_NIXOS_RELEASE=${latest_release}" >> $GITHUB_ENV
+      - name: Compare repository's NixOS version to latest available release
+        run: |
+          if [[ "${CURRENT_NIXOS_VERSION}" != "${LATEST_NIXOS_RELEASE}" ]] ; then
+            echo "An upgrade is available, to NixOS ${LATEST_NIXOS_RELEASE} (currently on NixOS ${CURRENT_NIXOS_VERSION})"
+            echo "NIXOS_UPGRADE_AVAILABLE=true" >> $GITHUB_ENV
+          else
+            echo "Already on the latest NixOS version (${CURRENT_NIXOS_VERSION})"
+            echo "NIXOS_UPGRADE_AVAILABLE=false" >> $GITHUB_ENV
+          fi
+      - name: Change version number for nixpkgs input in flake.nix
+        run: |
+          # Since how we found the NixOS version in an earlier step depends on the lock file,
+          # but we are modifying flake.nix, we need to be able to match any version that is
+          # already in flake.nix, in case there is a mismatch.
+          sed -E -i "s|(nixpkgs\.url = \"github:nixos/nixpkgs/nixos-)[0-9]{2}\.[0-9]{2}|\1${LATEST_NIXOS_RELEASE}|" flake.nix
+        if: env.NIXOS_UPGRADE_AVAILABLE == 'true'
+      - name: Update flake.lock
+        run: |
+          # Make sure commits can be made
+          git config --local user.email "${{ env.GITHUB_COMMITTER_EMAIL }}"
+          git config --local user.name "${{ env.GITHUB_COMMITTER_NAME }}"
+          
+          # Might as well do all inputs
+          nix flake update --commit-lock-file
+
+          # Save commit message from lock file update as environment variable
+          DELIMITER=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          COMMIT_MESSAGE="$(git log --format=%b -n 1)"
+          echo "GIT_COMMIT_MESSAGE<<$DELIMITER" >> $GITHUB_ENV
+          echo "$COMMIT_MESSAGE" >> $GITHUB_ENV
+          echo "$DELIMITER" >> $GITHUB_ENV
+          echo "GIT_COMMIT_MESSAGE is: ${COMMIT_MESSAGE}"
+
+          # Remove above commit (we just needed it for the PR body) while keeping changes
+          git reset --soft HEAD~1
+        if: env.NIXOS_UPGRADE_AVAILABLE == 'true'
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "upgrade: Change NixOS flake version to ${{ env.LATEST_NIXOS_RELEASE }}"
+          branch: "nixos-upgrade-${{ env.LATEST_NIXOS_RELEASE }}"
+          sign-commits: true
+          title: "upgrade: Change NixOS flake version to ${{ env.LATEST_NIXOS_RELEASE }}"
+          body: |
+            This commit upgrades the version of NixOS, as referred to as the nixpkgs input, from ${{ env.CURRENT_NIXOS_VERSION }} to ${{ env.LATEST_NIXOS_RELEASE }}.
+
+            ```
+            ${{ env.GIT_COMMIT_MESSAGE }}
+            ```
+
+            **NOTE**: Make sure other references to NixOS versions, particularly within the `publish` workflow, are updated too before merging!
+          add-paths: |
+            flake.nix
+            flake.lock
+        if: env.NIXOS_UPGRADE_AVAILABLE == 'true'
