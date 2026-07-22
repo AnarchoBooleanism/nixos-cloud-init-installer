@@ -23,7 +23,7 @@ jobs:
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v22
       - name: Check Nix flake inputs
-        uses: DeterminateSystems/flake-checker-action@v12
+        uses: DeterminateSystems/flake-checker-action@v13
         with:
           check-owner: false # We're using non-NixOS inputs here
           check-outdated: false # This is the workflow for updating...

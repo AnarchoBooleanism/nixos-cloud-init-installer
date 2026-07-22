@@ -32,7 +32,7 @@ jobs:
       - name: Use Magic Nix Cache to cache builds between workflows
         uses: DeterminateSystems/magic-nix-cache-action@v14
       - name: Check Nix flake inputs
-        uses: DeterminateSystems/flake-checker-action@v12
+        uses: DeterminateSystems/flake-checker-action@v13
         with:
           fail-mode: true
           check-outdated: false # update.yaml should take care of this
