@@ -16,16 +16,16 @@ This assumes that you have Nix installed on your system, with flakes and nix-com
 
 **x86_64 (Intel/AMD):**
 ```bash
-nix run nixpkgs#nixos-generators -- \
-  --format iso --system x86_64-linux \
-  --flake .#x86_64 --out-link result
+nix build \
+    --system x86_64-linux --out-link result \
+    .#nixosConfigurations.x86_64.config.system.build.images.iso
 ```
 
 **aarch64 (ARM64):**
 ```bash
-nix run nixpkgs#nixos-generators -- \
-  --format iso --system aarch64-linux \
-  --flake .#aarch64 --out-link result
+nix build \
+    --system aarch64-linux --out-link result \
+    .#nixosConfigurations.aarch64.config.system.build.images.iso
 ```
 
 After building, your image should be in the `result/iso/` directory, being named something in the vein of `nixos-minimal-26.05-DATE-HASH-ARCHITECTURE-linux.iso`.
