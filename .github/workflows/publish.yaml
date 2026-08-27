@@ -21,15 +21,15 @@ jobs:
     steps:
       - name: Checkout main branch
         uses: actions/checkout@v7
-      - name: "Install Nix"
+      - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
           nix_path: nixpkgs=channel:26.05 # Change me on NixOS upgrades!
       - name: Build ISO images
         run: >
-          nix run nixpkgs#nixos-generators -- \
-            --format iso --system ${{ matrix.architecture }}-linux \
-            --flake .#${{ matrix.architecture }} --out-link result
+          nix build \
+              --system ${{ matrix.architecture }}-linux --out-link result \
+              .#nixosConfigurations.${{ matrix.architecture }}.config.system.build.images.iso
       - name: Copy and rename generated ISO file to reflect version and architecture
         run: |
           REAL_ISO_FILENAME=$(readlink -f $(find result/iso/ -name "nixos-*.iso" -print -quit))
