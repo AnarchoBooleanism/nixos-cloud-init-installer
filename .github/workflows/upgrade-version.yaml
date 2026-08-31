@@ -36,8 +36,8 @@ jobs:
             | sub("nixos-"; "")
           ')
 
-          echo "The current NixOS version of the repository is $version"
-          echo "CURRENT_NIXOS_VERSION=${version}" >> $GITHUB_ENV
+          printf "The current NixOS version of the repository is %s\n" "${version}"
+          printf "CURRENT_NIXOS_VERSION=%s\n" "${version}" >> $GITHUB_ENV
       - name: Find the latest available NixOS version
         run: |
           # ASSUMPTION: .results.releases is in reverse chronological order!
@@ -49,20 +49,20 @@ jobs:
             | head -n 1)
           
           if [[ -z "${latest_release}" ]] ; then
-              echo "Error: No NixOS release is available to use for today ($today_date)! Is your time set correctly?" >&2
+              printf "Error: No NixOS release is available to use for today (%s)! Is your time set correctly?\n" "${today_date}" >&2
               exit 1
           fi
 
-          echo "Found latest NixOS release: ${latest_release}"
-          echo "LATEST_NIXOS_RELEASE=${latest_release}" >> $GITHUB_ENV
+          printf "Found latest NixOS release: %s\n" "${latest_release}"
+          printf "LATEST_NIXOS_RELEASE=%s\n" "${latest_release}" >> $GITHUB_ENV
       - name: Compare repository's NixOS version to latest available release
         run: |
           if [[ "${CURRENT_NIXOS_VERSION}" != "${LATEST_NIXOS_RELEASE}" ]] ; then
-            echo "An upgrade is available, to NixOS ${LATEST_NIXOS_RELEASE} (currently on NixOS ${CURRENT_NIXOS_VERSION})"
-            echo "NIXOS_UPGRADE_AVAILABLE=true" >> $GITHUB_ENV
+            printf "An upgrade is available, to NixOS %s (currently on NixOS %s)\n" "${LATEST_NIXOS_RELEASE}" "${CURRENT_NIXOS_VERSION}"
+            printf "%s\n" "NIXOS_UPGRADE_AVAILABLE=true" >> $GITHUB_ENV
           else
-            echo "Already on the latest NixOS version (${CURRENT_NIXOS_VERSION})"
-            echo "NIXOS_UPGRADE_AVAILABLE=false" >> $GITHUB_ENV
+            printf "Already on the latest NixOS version (%s)\n" "${CURRENT_NIXOS_VERSION}"
+            printf "%s\n" "NIXOS_UPGRADE_AVAILABLE=false" >> $GITHUB_ENV
           fi
       - name: Change version number for nixpkgs input in flake.nix
         run: |
@@ -83,10 +83,10 @@ jobs:
           # Save commit message from lock file update as environment variable
           DELIMITER=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           COMMIT_MESSAGE="$(git log --format=%b -n 1)"
-          echo "GIT_COMMIT_MESSAGE<<$DELIMITER" >> $GITHUB_ENV
-          echo "$COMMIT_MESSAGE" >> $GITHUB_ENV
-          echo "$DELIMITER" >> $GITHUB_ENV
-          echo "GIT_COMMIT_MESSAGE is: ${COMMIT_MESSAGE}"
+          printf "GIT_COMMIT_MESSAGE<<%s\n" "${DELIMITER}" >> $GITHUB_ENV
+          printf "%s\n" "$COMMIT_MESSAGE" >> $GITHUB_ENV
+          printf "%s\n" "$DELIMITER" >> $GITHUB_ENV
+          printf "GIT_COMMIT_MESSAGE is: %s\n" "${COMMIT_MESSAGE}"
 
           # Remove above commit (we just needed it for the PR body) while keeping changes
           git reset --soft HEAD~1
