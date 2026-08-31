@@ -5,6 +5,18 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Removing unnecessary items for reduced space, since this is for VMs
+  documentation.enable = false;
+  documentation.nixos.enable = false;
+  documentation.man.enable = false;
+  hardware.enableRedistributableFirmware = lib.mkForce false;
+  hardware.firmware = lib.mkForce [ ];
+  networking.wireless.enable = lib.mkForce false;
+  boot.loader.grub.memtest86.enable = lib.mkForce false;
+
+  # Get a really high compression ratio, we only build once per version, but download many times
+  isoImage.squashfsCompression = "zstd -Xcompression-level 22";
+
   # Boot faster
   boot.loader.timeout = lib.mkForce 2;
 
