@@ -13,6 +13,8 @@ permissions:
 jobs:
   update-lock:
     runs-on: ubuntu-latest
+    environment:
+      name: nix-commit
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -21,10 +23,13 @@ jobs:
       - name: Check Nix flake inputs
         uses: DeterminateSystems/flake-checker-action@v13
         with:
-          fail-mode: true
           check-outdated: false # This is the workflow for updating...
+          fail-mode: true
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v28
         with:
           commit-msg: 'bump(lock): Update flake.lock'
           pr-title: 'bump(lock): Update flake.lock'
+          sign-commits: true
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-fingerprint: ${{ secrets.GPG_FINGERPRINT }} # specify subkey fingerprint (optional)
