@@ -102,6 +102,7 @@ jobs:
           commit-message: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
           sign-commits: true
           title: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
+          labels: upgrade,nix
           body: |
             This commit upgrades the version of the `nixpkgs` input (corresponding to a new NixOS version), from ${{ env.CURRENT_NIXOS_VERSION }} to ${{ env.LATEST_NIXOS_RELEASE }}.
 

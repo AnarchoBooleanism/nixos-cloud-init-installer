@@ -31,6 +31,7 @@ jobs:
           branch: chore/update-flake-lock
           commit-msg: "chore[bump]: Update flake.lock"
           pr-title: "chore[bump]: Update flake.lock"
+          pr-labels: dependencies,nix
           sign-commits: true
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-fingerprint: ${{ secrets.GPG_FINGERPRINT }} # specify subkey fingerprint (optional)
