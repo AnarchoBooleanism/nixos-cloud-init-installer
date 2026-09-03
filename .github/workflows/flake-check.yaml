@@ -10,12 +10,12 @@ on:
     branches:
       - main
     paths-ignore:
-      - '.github/**' # Avoid issues with Dependabot
+      - ".github/**" # Avoid issues with Dependabot
   push:
     branches:
       - main
     paths-ignore:
-      - '.github/**'
+      - ".github/**"
 
 jobs:
   flake-check:

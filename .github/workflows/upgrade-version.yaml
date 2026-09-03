@@ -3,14 +3,14 @@ on:
   workflow_dispatch:
   schedule:
     # At 01:00 on day-of-month 7, every June & December (roughly a week or two after NixOS release)
-    - cron: '0 1 7 6,12 *'
+    - cron: "0 1 7 6,12 *"
 
 permissions:
   pull-requests: write
   contents: write
 
 env:
-  NIXOS_RELEASES_API_URL: "https://endoflife.date/api/v1/products/nixos/"
+  NIXOS_RELEASES_API_URL: https://endoflife.date/api/v1/products/nixos/
 
 jobs:
   upgrade-nixos-version:
@@ -98,12 +98,14 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
         with:
-          commit-message: "upgrade: Change NixOS flake version to ${{ env.LATEST_NIXOS_RELEASE }}"
-          branch: "nixos-upgrade-${{ env.LATEST_NIXOS_RELEASE }}"
+          branch: chore/nixos-upgrade-${{ env.LATEST_NIXOS_RELEASE }}
+          commit-message: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
           sign-commits: true
-          title: "upgrade: Change NixOS flake version to ${{ env.LATEST_NIXOS_RELEASE }}"
+          title: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
           body: |
-            This commit upgrades the version of NixOS, as referred to as the nixpkgs input, from ${{ env.CURRENT_NIXOS_VERSION }} to ${{ env.LATEST_NIXOS_RELEASE }}.
+            This commit upgrades the version of the `nixpkgs` input (corresponding to a new NixOS version), from ${{ env.CURRENT_NIXOS_VERSION }} to ${{ env.LATEST_NIXOS_RELEASE }}.
+
+            Before merging, please read through [the release notes for NixOS](https://nixos.org/manual/nixos/stable/release-notes#sec-release-${{ env.LATEST_NIXOS_RELEASE }}) and [the release notes for nixpkgs](https://nixos.org/manual/nixpkgs/stable/release-notes#sec-nixpkgs-release-${{ env.LATEST_NIXOS_RELEASE }}) for any potential breaking changes and adjust accordingly to avoid regressions.
 
             ```
             ${{ env.GIT_COMMIT_MESSAGE }}
