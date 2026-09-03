@@ -4,7 +4,7 @@ name: Update flake.lock
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 12 * * 0' # Every Sunday at 12:00 PM
+    - cron: "0 12 * * 0" # Every Sunday at 12:00 PM
 
 permissions:
   pull-requests: write
@@ -28,8 +28,9 @@ jobs:
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@v28
         with:
-          commit-msg: 'bump(lock): Update flake.lock'
-          pr-title: 'bump(lock): Update flake.lock'
+          branch: chore/update-flake-lock
+          commit-msg: "chore[bump]: Update flake.lock"
+          pr-title: "chore[bump]: Update flake.lock"
           sign-commits: true
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-fingerprint: ${{ secrets.GPG_FINGERPRINT }} # specify subkey fingerprint (optional)
