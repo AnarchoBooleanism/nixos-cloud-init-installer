@@ -34,7 +34,6 @@ jobs:
       - name: Check Nix flake inputs
         uses: DeterminateSystems/flake-checker-action@v13
         with:
-          check-owner: false # We're using non-NixOS inputs here
           check-outdated: false # This is the workflow for updating...
           fail-mode: true
       - name: Get NixOS version listed in repository
