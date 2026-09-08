@@ -51,8 +51,23 @@ jobs:
           pattern: iso-artifact-*
           merge-multiple: true
       - name: Create GitHub Release
+        id: create-release
         uses: softprops/action-gh-release@v3
         with:
           draft: true
           generate_release_notes: true
           files: iso-artifacts/*.iso
+      - name: Create GitHub Release notification summary
+        run: |
+          printf "# 🎉 Release ready!\n\n" >> $GITHUB_STEP_SUMMARY
+          printf "The link to the release (tag **%s**, ID **%s**) is: %s\n\n" \
+            "${{ github.ref_name }}" \
+            "${{ steps.create-release.outputs.id }}" \
+            "${{ steps.create-release.outputs.url }}" \
+            >> $GITHUB_STEP_SUMMARY
+          printf "Note that the release is still yet unpublished, \
+          so you will need to manually publish it.\n\n" \
+            >> $GITHUB_STEP_SUMMARY
+          printf "Generated at: %s\n" \
+            "$(date -u +"%Y-%m-%d %H:%M:%S UTC")" \
+            >> $GITHUB_STEP_SUMMARY
