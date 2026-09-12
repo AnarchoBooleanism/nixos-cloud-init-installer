@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - ".github/**" # Avoid issues with Dependabot
+      - ".github/**" # Avoid issues with .github files
   push:
     branches:
       - main

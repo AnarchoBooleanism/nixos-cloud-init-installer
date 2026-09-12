@@ -1,0 +1,15 @@
+{
+  // NOTE: This should be able to catch github-releases!
+
+  // Overall Renovate config
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices"
+  ],
+
+  // Scheduling
+  "timezone": "America/Los_Angeles",
+  // NOTE: Renovate does NOT support minute granularity, so it is specified as "*"
+  "schedule": ["* 6 * * 1"], // Every Monday at 6:00 AM
+  "prHourlyLimit": 0
+}
