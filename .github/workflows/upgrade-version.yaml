@@ -19,9 +19,9 @@ jobs:
       name: nix-commit
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Import GPG key
-        uses: crazy-max/ghaction-import-gpg@v7
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           fingerprint: ${{ secrets.GPG_FINGERPRINT }}
@@ -30,9 +30,9 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v22
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
       - name: Check Nix flake inputs
-        uses: DeterminateSystems/flake-checker-action@v13
+        uses: DeterminateSystems/flake-checker-action@de924abd783455e8429c858962b9e43062d19da1 # v13
         with:
           check-outdated: false # This is the workflow for updating...
           fail-mode: true
@@ -96,7 +96,7 @@ jobs:
           git reset --soft HEAD~1
         if: env.NIXOS_UPGRADE_AVAILABLE == 'true'
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           branch: chore/nixos-upgrade-${{ env.LATEST_NIXOS_RELEASE }}
           commit-message: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
