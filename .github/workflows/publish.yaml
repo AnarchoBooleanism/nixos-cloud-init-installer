@@ -6,7 +6,9 @@ on: # Only run on new version tag push
       - v*
 
 permissions:
+  id-token: write
   contents: write
+  attestations: write
 
 jobs:
   build:
@@ -71,3 +73,7 @@ jobs:
           printf "Generated at: %s\n" \
             "$(date -u +"%Y-%m-%d %H:%M:%S UTC")" \
             >> $GITHUB_STEP_SUMMARY
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
+        with:
+          subject-path: iso-artifacts/*.iso
