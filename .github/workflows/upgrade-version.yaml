@@ -14,7 +14,7 @@ env:
 
 jobs:
   upgrade-nixos-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     environment:
       name: nix-commit
     steps:

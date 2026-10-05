@@ -44,7 +44,7 @@ jobs:
           path: nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
   create-release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04-arm
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
