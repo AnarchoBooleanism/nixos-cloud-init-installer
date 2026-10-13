@@ -29,8 +29,8 @@ jobs:
         uses: DeterminateSystems/update-flake-lock@da03c0f078bc4b2c37ee4f7e072d34bf8f188bb3 # v29
         with:
           branch: chore/update-flake-lock
-          commit-msg: "chore[bump]: Update flake.lock"
-          pr-title: "chore[bump]: Update flake.lock"
+          commit-msg: "chore(bump): Update flake.lock"
+          pr-title: "chore(bump): Update flake.lock"
           pr-labels: dependencies,nix
           sign-commits: true
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
