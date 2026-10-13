@@ -55,7 +55,7 @@ jobs:
             --arg today "$today_date" \
             '.result.releases[] | select(.releaseDate <= $today) | .name' \
             | head -n 1)
-          
+
           if [[ -z "${latest_release}" ]] ; then
               printf "Error: No NixOS release is available to use for today (%s)! Is your time set correctly?\n" "${today_date}" >&2
               exit 1
@@ -99,9 +99,9 @@ jobs:
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           branch: chore/nixos-upgrade-${{ env.LATEST_NIXOS_RELEASE }}
-          commit-message: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
+          commit-message: "chore(nixpkgs): Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
           sign-commits: true
-          title: "chore[nixpkgs]: Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
+          title: "chore(nixpkgs): Upgrade nixpkgs input to ${{ env.LATEST_NIXOS_RELEASE }}"
           labels: upgrade,nix
           body: |
             This commit upgrades the version of the `nixpkgs` input (corresponding to a new NixOS version), from ${{ env.CURRENT_NIXOS_VERSION }} to ${{ env.LATEST_NIXOS_RELEASE }}.
