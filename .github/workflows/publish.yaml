@@ -74,6 +74,6 @@ jobs:
             "$(date -u +"%Y-%m-%d %H:%M:%S UTC")" \
             >> $GITHUB_STEP_SUMMARY
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-path: iso-artifacts/*.iso
