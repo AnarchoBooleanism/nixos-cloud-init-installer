@@ -35,13 +35,17 @@ jobs:
       - name: Copy and rename generated ISO file to reflect version and architecture
         run: |
           REAL_ISO_FILENAME=$(readlink -f $(find result/iso/ -name "nixos-*.iso" -print -quit))
-          cp "$REAL_ISO_FILENAME" \
-            nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+          NORMALIZED_ISO_FILENAME="nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso"
+          cp "$REAL_ISO_FILENAME" "$NORMALIZED_ISO_FILENAME"
+          
+          sha256sum "$NORMALIZED_ISO_FILENAME" >> "$NORMALIZED_ISO_FILENAME.sha256"
       - name: Upload build artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: iso-artifact-${{ matrix.architecture }}
-          path: nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+          path: |
+            nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso
+            nixos-cloud-init-installer-${{ github.ref_name }}-${{ matrix.architecture }}.iso.sha256
   create-release:
     needs: build
     runs-on: ubuntu-26.04-arm
@@ -52,13 +56,22 @@ jobs:
           path: iso-artifacts
           pattern: iso-artifact-*
           merge-multiple: true
+      - name: Copy and rename generated ISO file to reflect version and architecture
+        run: |
+          cd iso-artifacts
+          for file in *.sha256; do 
+            sha256sum -c "$file"
+            cat "$file" >> SHA256SUMS
+          done
       - name: Create GitHub Release
         id: create-release
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           draft: true
           generate_release_notes: true
-          files: iso-artifacts/*.iso
+          files: |
+            iso-artifacts/*.iso
+            iso-artifacts/SHA256SUMS
       - name: Create GitHub Release notification summary
         run: |
           printf "# 🎉 Release ready!\n\n" >> $GITHUB_STEP_SUMMARY
@@ -76,4 +89,6 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
-          subject-path: iso-artifacts/*.iso
+          subject-path: |
+            iso-artifacts/*.iso
+            iso-artifacts/SHA256SUMS
