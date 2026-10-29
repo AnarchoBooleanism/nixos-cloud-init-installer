@@ -56,7 +56,7 @@ jobs:
           path: iso-artifacts
           pattern: iso-artifact-*
           merge-multiple: true
-      - name: Copy and rename generated ISO file to reflect version and architecture
+      - name: Verify checksums and aggregate to SHA256SUMS file
         run: |
           cd iso-artifacts
           for file in *.sha256; do 
