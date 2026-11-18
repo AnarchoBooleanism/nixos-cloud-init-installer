@@ -4,6 +4,6 @@
   // Overall Renovate config
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "github>AnarchoBooleanism/renovate-config#v7.0.1"
+    "github>AnarchoBooleanism/renovate-config#v8.0.0"
   ]
 }
